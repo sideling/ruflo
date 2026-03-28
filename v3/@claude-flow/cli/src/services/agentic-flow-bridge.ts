@@ -14,7 +14,10 @@
 
 let _reasoningBankP: Promise<typeof import('agentic-flow/reasoningbank') | null> | null = null;
 let _routerP: Promise<typeof import('agentic-flow/router') | null> | null = null;
-let _orchestrationP: Promise<typeof import('agentic-flow/orchestration') | null> | null = null;
+// agentic-flow/orchestration is not yet exported by agentic-flow v2.x — keep the
+// Promise typed as `any` and use @vite-ignore so Vite's pre-bundler skips
+// static resolution of the missing subpath (it will resolve to null at runtime).
+let _orchestrationP: Promise<any | null> | null = null;
 
 // ---------------------------------------------------------------------------
 // Public loaders
@@ -49,7 +52,8 @@ export function getRouter() {
  */
 export function getOrchestration() {
   if (_orchestrationP === null) {
-    _orchestrationP = import('agentic-flow/orchestration').catch(() => null);
+    // @vite-ignore — subpath not in agentic-flow exports map; resolves to null gracefully
+    _orchestrationP = import(/* @vite-ignore */ 'agentic-flow/orchestration').catch(() => null);
   }
   return _orchestrationP;
 }
