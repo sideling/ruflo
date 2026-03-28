@@ -1,8 +1,8 @@
 # Claude Code Configuration - Ruflo v3.5
 
-> **Ruflo v3.5** (2026-02-27) — First major stable release. Formerly "Claude Flow".
-> 5,900+ commits, 55 alpha iterations, 259 MCP tools, 60+ agents, 8 AgentDB controllers.
-> Packages: `@claude-flow/cli@3.5.0`, `claude-flow@3.5.0`, `ruflo@3.5.0`
+> **Ruflo v3.5.48** (2026-03-28) — Latest stable release. Formerly "Claude Flow".
+> 5,900+ commits, 55 alpha iterations, 31 MCP tool modules, 60+ agents, 8 AgentDB controllers.
+> Packages: `@claude-flow/cli@3.5.48`, `claude-flow@3.5.48`, `ruflo@3.5.48`
 
 ## Behavioral Rules (Always Enforced)
 
@@ -38,12 +38,22 @@
 
 | Package | Path | Purpose |
 |---------|------|---------|
-| `@claude-flow/cli` | `v3/@claude-flow/cli/` | CLI entry point (26 commands) |
+| `@claude-flow/cli` | `v3/@claude-flow/cli/` | CLI entry point (41 commands, 31 MCP tool modules) |
 | `@claude-flow/codex` | `v3/@claude-flow/codex/` | Dual-mode Claude + Codex collaboration |
-| `@claude-flow/guidance` | `v3/@claude-flow/guidance/` | Governance control plane |
+| `@claude-flow/guidance` | `v3/@claude-flow/guidance/` | Governance control plane — compiles CLAUDE.md into policy bundles |
 | `@claude-flow/hooks` | `v3/@claude-flow/hooks/` | 17 hooks + 12 workers |
 | `@claude-flow/memory` | `v3/@claude-flow/memory/` | AgentDB + HNSW search |
 | `@claude-flow/security` | `v3/@claude-flow/security/` | Input validation, CVE remediation |
+| `@claude-flow/agents` | `v3/@claude-flow/agents/` | Agent YAML definitions (architect, coder, reviewer, tester, security-architect) |
+| `@claude-flow/embeddings` | `v3/@claude-flow/embeddings/` | Vector embeddings — sql.js cache, HNSW, hyperbolic |
+| `@claude-flow/neural` | `v3/@claude-flow/neural/` | SONA, MoE, EWC++ neural training |
+| `@claude-flow/performance` | `v3/@claude-flow/performance/` | Benchmarking and profiling |
+| `@claude-flow/plugins` | `v3/@claude-flow/plugins/` | Plugin system — manager, discovery, IPFS registry |
+| `@claude-flow/swarm` | `v3/@claude-flow/swarm/` | Swarm coordination primitives |
+| `@claude-flow/shared` | `v3/@claude-flow/shared/` | Shared types and utilities |
+| `@claude-flow/mcp` | `v3/@claude-flow/mcp/` | MCP server implementation |
+| `@claude-flow/integration` | `v3/@claude-flow/integration/` | agentic-flow bridge, token optimizer |
+| `ruflo` | `ruflo/` | Thin alias wrapper (`npx ruflo@alpha`) |
 
 ## Concurrency: 1 MESSAGE = ALL RELATED OPERATIONS
 
@@ -332,7 +342,7 @@ This project is configured with Claude Flow V3 (Anti-Drift Defaults):
 - **HNSW Indexing**: Enabled (150x-12,500x faster)
 - **Neural Learning**: Enabled (SONA)
 
-## V3 CLI Commands (26 Commands, 140+ Subcommands)
+## V3 CLI Commands (41 Commands)
 
 ### Core Commands
 
@@ -340,9 +350,10 @@ This project is configured with Claude Flow V3 (Anti-Drift Defaults):
 |---------|-------------|-------------|
 | `init` | 4 | Project initialization with wizard, presets, skills, hooks |
 | `agent` | 8 | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs) |
+| `agent-wasm` | — | WASM-accelerated agent operations (Agent Booster tier-1) |
 | `swarm` | 6 | Multi-agent swarm coordination and orchestration |
 | `memory` | 11 | AgentDB memory with vector search (150x-12,500x faster) |
-| `mcp` | 9 | MCP server management and tool execution |
+| `mcp` | 9 | MCP server management and tool execution (stdio/http/websocket) |
 | `task` | 6 | Task creation, assignment, and lifecycle |
 | `session` | 7 | Session state management and persistence |
 | `config` | 7 | Configuration management and provider setup |
@@ -367,36 +378,111 @@ This project is configured with Claude Flow V3 (Anti-Drift Defaults):
 | `claims` | 4 | Claims-based authorization (check, grant, revoke, list) |
 | `migrate` | 5 | V2 to V3 migration with rollback support |
 | `process` | 4 | Background process management |
-| `doctor` | 1 | System diagnostics with health checks |
+| `doctor` | 1 | System diagnostics with health checks (incl. agentic-flow check) |
 | `completions` | 4 | Shell completions (bash, zsh, fish, powershell) |
+
+### New in v3.5.x
+
+| Command | Description |
+|---------|-------------|
+| `autopilot` | Persistent swarm completion — keeps agents working until ALL tasks are done (ADR-072) |
+| `guidance` | Compile CLAUDE.md into policy bundles; retrieve/enforce/optimize governance rules |
+| `analyze` | Codebase analysis and pattern detection |
+| `issues` | GitHub issue management and tracking |
+| `progress` | Task progress monitoring and reporting |
+| `route` | Intelligent task routing (3-tier model: WASM / Haiku / Sonnet) |
+| `ruvector` | RuVector operations (init, setup, benchmark, optimize, import, migrate, backup, status) |
+| `update` | CLI self-update management |
+| `appliance` | Appliance management (basic) |
+| `appliance-advanced` | Advanced appliance operations |
+| `transfer-store` | Memory/state transfer between sessions |
+| `benchmark` | Standalone benchmarking suite |
+| `cleanup` | Workspace and artifact cleanup |
 
 ### Quick CLI Examples
 
 ```bash
 # Initialize project
-npx claude-flow@v3alpha init --wizard
+npx ruflo@latest init --wizard
 
 # Start daemon with background workers
-npx claude-flow@v3alpha daemon start
+npx ruflo@latest daemon start
 
 # Spawn an agent
-npx claude-flow@v3alpha agent spawn -t coder --name my-coder
+npx ruflo@latest agent spawn -t coder --name my-coder
 
 # Initialize swarm
-npx claude-flow@v3alpha swarm init --v3-mode
+npx ruflo@latest swarm init --v3-mode
 
 # Search memory (HNSW-indexed)
-npx claude-flow@v3alpha memory search -q "authentication patterns"
+npx ruflo@latest memory search -q "authentication patterns"
 
 # System diagnostics
-npx claude-flow@v3alpha doctor --fix
+npx ruflo@latest doctor --fix
 
 # Security scan
-npx claude-flow@v3alpha security scan --depth full
+npx ruflo@latest security scan --depth full
 
 # Performance benchmark
-npx claude-flow@v3alpha performance benchmark --suite all
+npx ruflo@latest performance benchmark --suite all
+
+# Autopilot — keep working until all tasks complete
+npx ruflo@latest autopilot start --max-iterations 50
+
+# Compile CLAUDE.md into policy bundle
+npx ruflo@latest guidance compile -r ./CLAUDE.md -l ./CLAUDE.local.md
+
+# RuVector setup and benchmark
+npx ruflo@latest ruvector setup && npx ruflo@latest ruvector benchmark
+
+# Intelligent task routing
+npx ruflo@latest route --task "refactor authentication module"
 ```
+
+> **Note**: `npx ruflo@latest`, `npx claude-flow@latest`, and `npx @claude-flow/cli@latest` are equivalent — `ruflo` is the canonical user-facing name.
+
+## Autopilot (ADR-072)
+
+Autopilot provides **persistent swarm completion** — it intercepts the stop signal and re-engages agents until ALL tasks in TodoList (or specified sources) are done.
+
+```bash
+npx ruflo@latest autopilot start   # Enable autopilot mode
+npx ruflo@latest autopilot stop    # Disable
+npx ruflo@latest autopilot status  # Show progress and iteration count
+npx ruflo@latest autopilot log     # View iteration history
+```
+
+### Autopilot Safety Guards
+
+| Guard | Default | Behaviour |
+|-------|---------|-----------|
+| Max iterations | 50 | Hard stop after N re-engagements |
+| Timeout | 30 min | Hard stop after elapsed time |
+| Stall detection | 10 iterations | Auto-disable if no progress in 10 cycles |
+| Task sources | `todo,github` | `todo` = TodoList, `github` = open issues |
+
+Autopilot is implemented in `v3/@claude-flow/cli/src/commands/autopilot.ts` + `autopilot-state.ts`.
+
+## Guidance System
+
+The Guidance Control Plane compiles `CLAUDE.md` + `CLAUDE.local.md` into a structured **policy bundle** (constitution + shards + manifest) and enforces those rules at runtime.
+
+```bash
+# Compile CLAUDE.md into a policy bundle
+npx ruflo@latest guidance compile -r ./CLAUDE.md -l ./CLAUDE.local.md
+
+# Retrieve a specific rule shard
+npx ruflo@latest guidance retrieve --query "file organization"
+
+# Enforce current policy (validate code against rules)
+npx ruflo@latest guidance enforce --target ./src
+
+# Optimize policy (remove redundancy, improve clarity)
+npx ruflo@latest guidance optimize
+```
+
+- Source: `v3/@claude-flow/guidance/src/` — compiler, gates, truth-anchors, manifest-validator
+- MCP tools: `guidance_discover`, `guidance_retrieve` (exposed via MCP server)
 
 ## Headless Background Instances (claude -p)
 
@@ -779,7 +865,7 @@ CLAUDE_FLOW_MEMORY_PATH=./data/memory
 
 ## Doctor Health Checks
 
-Run `npx claude-flow@v3alpha doctor` to check:
+Run `npx ruflo@latest doctor` (or `--fix` to auto-repair) to check:
 - Node.js version (20+)
 - npm version (9+)
 - Git installation
@@ -790,20 +876,21 @@ Run `npx claude-flow@v3alpha doctor` to check:
 - MCP servers
 - Disk space
 - TypeScript installation
+- `agentic-flow` v3 integration (filesystem-based, ESM-compatible)
 
 ## Quick Setup
 
 ```bash
 # Add MCP servers
-claude mcp add claude-flow npx claude-flow@v3alpha mcp start
+claude mcp add ruflo npx ruflo@latest mcp start
 claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional
 claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional
 
 # Start daemon
-npx claude-flow@v3alpha daemon start
+npx ruflo@latest daemon start
 
 # Run doctor
-npx claude-flow@v3alpha doctor --fix
+npx ruflo@latest doctor --fix
 ```
 
 ## Claude Code vs MCP Tools
