@@ -102,6 +102,9 @@ export default defineConfig({
   // Path aliases for clean imports
   resolve: {
     alias: {
+      // agentic-flow/orchestration is not yet exported by agentic-flow v2.x.
+      // Alias it to an empty stub so vite does not throw during module resolution.
+      'agentic-flow/orchestration': path.resolve(__dirname, './__tests__/stubs/agentic-flow-orchestration.ts'),
       '@': path.resolve(__dirname, './src'),
       '@tests': path.resolve(__dirname, './__tests__'),
       '@fixtures': path.resolve(__dirname, './__tests__/fixtures'),

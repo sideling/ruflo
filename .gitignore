@@ -117,6 +117,7 @@ test-output/
 test-reports/
 tests/logs/
 tests/results/
+tests/.tmp-*/
 the
 tmp/
 ui_*.log
@@ -156,6 +157,7 @@ hive-mind-prompt-*.txt
 # Claude Flow runtime data
 .claude-flow/data/
 .claude-flow/logs/
+data/
 
 # Environment variables
 .env
