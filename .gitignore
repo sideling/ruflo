@@ -157,6 +157,7 @@ hive-mind-prompt-*.txt
 # Claude Flow runtime data
 .claude-flow/data/
 .claude-flow/logs/
+data/
 
 # Environment variables
 .env
